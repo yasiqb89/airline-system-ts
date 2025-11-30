@@ -118,22 +118,11 @@ class Flight {
         this._status = newStatus;
     }
 
-    static fromPlain(obj: {
-        id: number;
-        flightNumber: string;
-        origin: string;
-        destination: string;
-        departureTime: string;
-        arrivalTime: string;
-        capacity: number;
-        bookedSeats: number;
-        status: FlightStatus;
-    }): Flight {
+    static fromPlain(obj: FlightData): Flight {
         const flightData = { ...obj, departureTime: new Date(obj.departureTime), arrivalTime: new Date(obj.arrivalTime) }
         return new Flight(flightData);
     }
 }
-
 
 
 // Test code (only runs when this file is executed directly)

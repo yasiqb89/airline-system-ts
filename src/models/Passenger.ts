@@ -1,11 +1,11 @@
-interface PassengerData {
+export interface PassengerData {
     id: number;
     name: string;
     age: number;
     passportNumber: string;
 }
 
-class Passenger {
+export default class Passenger {
     private _id: number;
     private _name: string;
     private _age: number;
@@ -34,8 +34,17 @@ class Passenger {
         return this._passportNumber;
     }
 
-    static parse(obj: PassengerData): Passenger {
-        return new Passenger(obj);
+    static fromPlain(obj: PassengerData): Passenger {
+        const passengerData = { ...obj }
+        return new Passenger(passengerData);
+    }
+
+    toJSON(): PassengerData {
+        return {
+            id: this._id,
+            name: this._name,
+            age: this._age,
+            passportNumber: this._passportNumber
+        };
     }
 }
-
