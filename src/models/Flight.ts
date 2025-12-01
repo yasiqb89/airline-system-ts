@@ -1,7 +1,7 @@
 
 type FlightStatus = "scheduled" | "boarding" | "departed" | "cancelled";
 
-interface FlightData {
+export interface FlightData {
     id: number;
     flightNumber: string;
     origin: string;
@@ -13,7 +13,7 @@ interface FlightData {
     status: FlightStatus
 }
 
-class Flight {
+export default class Flight {
     private _id: number;
     private _flightNumber: string;
     private _origin: string;

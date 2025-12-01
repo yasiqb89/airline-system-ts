@@ -1,7 +1,9 @@
 import { readFile, writeFile } from "fs/promises";
 import Passenger, { PassengerData } from "../models/Passenger.js";
 
+// File path JSON
 const filePath = new URL('../../data/passenger.json', import.meta.url);
+
 
 export async function getAllPassengers(): Promise<Passenger[]> {
     try {
@@ -55,11 +57,13 @@ export async function addPassenger(data: PassengerData): Promise<Passenger> {
     return newPassenger;
 }
 
+
 async function updatePassenger(passengerId: number, updates: Partial<PassengerData>): Promise<Passenger | null> {
     const id = Number(passengerId);
     if (Number.isFinite(id)) return null;
 
     const passengers = await getAllPassengers();
+
     const index = passengers.findIndex(p => p.id === id);
     if (index === -1) {
         return null;
@@ -80,7 +84,23 @@ async function updatePassenger(passengerId: number, updates: Partial<PassengerDa
     await writeFile(filePath, JSON.stringify(plainToSave, null, 2), "utf-8");
 
     return updatedPassenger;
+}
 
+
+async function removePassenger(passengerId: number): Promise<boolean | null> {
+    const id = Number(passengerId);
+    if (!Number.isFinite(id)) return null;
+
+    const passengers = await getAllPassengers();
+    const filtered = passengers.filter(p => p.id !== id);
+    if (filtered.length === passengers.length) {
+        return false;
+    }
+
+    const plainToSave: PassengerData[] = filtered.map(p => p.toJSON());
+    await writeFile(filePath, JSON.stringify(plainToSave, null, 2), 'utf-8');
+
+    return true;
 }
 
 
@@ -88,15 +108,28 @@ async function updatePassenger(passengerId: number, updates: Partial<PassengerDa
 
 // Test code (only runs when this file is executed directly)
 if (import.meta.url === `file://${process.argv[1]}`) {
-    console.log("Running PassengerServices test...");
+    // console.log("Running PassengerServices test...");
 
-    const result = await getAllPassengers();
-    console.log("Loaded passengers:", result.length);
+    // const result = await getAllPassengers();
+    // console.log("Loaded passengers:", result.length);
 
-    if (result[0]) {
-        console.log("First passenger info:", result[0].info);
-        console.log("Instance of Passenger:", result[0] instanceof Passenger);
-    } else {
-        console.log("No passengers found.");
-    }
+    // if (result[0]) {
+    //     console.log("First passenger info:", result[0].info);
+    //     console.log("Instance of Passenger:", result[0] instanceof Passenger);
+    // } else {
+    //     console.log("No passengers found.");
+    // }
+
+    console.log("Running removePassenger test...");
+
+    const testId = 50; // Change to an existing ID in your JSON
+
+    const before = await getAllPassengers();
+    console.log("Before removal:", before.map(p => p.id));
+
+    const result = await removePassenger(testId);
+    console.log("removePassenger returned:", result);
+
+    const after = await getAllPassengers();
+    console.log("After removal:", after.map(p => p.id));
 }

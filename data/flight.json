@@ -1,0 +1,79 @@
+[
+    {
+        "id": 1,
+        "flightNumber": "SK123",
+        "origin": "Oslo (OSL)",
+        "destination": "Stockholm (ARN)",
+        "departureTime": "2025-03-15T09:30:00.000Z",
+        "arrivalTime": "2025-03-15T11:00:00.000Z",
+        "capacity": 180,
+        "bookedSeats": 120,
+        "status": "scheduled"
+    },
+    {
+        "id": 2,
+        "flightNumber": "DY890",
+        "origin": "Oslo (OSL)",
+        "destination": "Copenhagen (CPH)",
+        "departureTime": "2025-03-15T13:45:00.000Z",
+        "arrivalTime": "2025-03-15T15:20:00.000Z",
+        "capacity": 160,
+        "bookedSeats": 90,
+        "status": "scheduled"
+    },
+    {
+        "id": 3,
+        "flightNumber": "LH455",
+        "origin": "Frankfurt (FRA)",
+        "destination": "San Francisco (SFO)",
+        "departureTime": "2025-03-16T07:10:00.000Z",
+        "arrivalTime": "2025-03-16T18:40:00.000Z",
+        "capacity": 320,
+        "bookedSeats": 310,
+        "status": "boarding"
+    },
+    {
+        "id": 4,
+        "flightNumber": "QR012",
+        "origin": "Doha (DOH)",
+        "destination": "Oslo (OSL)",
+        "departureTime": "2025-03-17T01:20:00.000Z",
+        "arrivalTime": "2025-03-17T06:55:00.000Z",
+        "capacity": 250,
+        "bookedSeats": 200,
+        "status": "scheduled"
+    },
+    {
+        "id": 5,
+        "flightNumber": "BA789",
+        "origin": "London (LHR)",
+        "destination": "New York (JFK)",
+        "departureTime": "2025-03-18T14:20:00.000Z",
+        "arrivalTime": "2025-03-18T20:10:00.000Z",
+        "capacity": 280,
+        "bookedSeats": 280,
+        "status": "full"
+    },
+    {
+        "id": 6,
+        "flightNumber": "AY450",
+        "origin": "Helsinki (HEL)",
+        "destination": "Tokyo (HND)",
+        "departureTime": "2025-03-19T22:00:00.000Z",
+        "arrivalTime": "2025-03-20T12:40:00.000Z",
+        "capacity": 320,
+        "bookedSeats": 150,
+        "status": "scheduled"
+    },
+    {
+        "id": 7,
+        "flightNumber": "EK215",
+        "origin": "Dubai (DXB)",
+        "destination": "Los Angeles (LAX)",
+        "departureTime": "2025-03-21T08:55:00.000Z",
+        "arrivalTime": "2025-03-21T20:15:00.000Z",
+        "capacity": 350,
+        "bookedSeats": 340,
+        "status": "scheduled"
+    }
+]
