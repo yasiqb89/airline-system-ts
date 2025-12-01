@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 import Flight, { FlightData } from "../models/Flight.js"
-import Passenger from "../models/Passenger.js";
+
 
 const filePath = new URL('../../data/flight.json', import.meta.url);
 
