@@ -26,10 +26,9 @@ export async function getPassengerById(passengerId: number): Promise<Passenger |
 
     const allPassengers = await getAllPassengers();
     const passenger = allPassengers.find(p => p.id === id);
-
     if (!passenger) return null;
 
-    return Passenger.fromPlain(passenger);
+    return passenger;
 }
 
 
@@ -93,9 +92,7 @@ async function removePassenger(passengerId: number): Promise<boolean | null> {
 
     const passengers = await getAllPassengers();
     const filtered = passengers.filter(p => p.id !== id);
-    if (filtered.length === passengers.length) {
-        return false;
-    }
+    if (filtered.length === passengers.length) return false;
 
     const plainToSave: PassengerData[] = filtered.map(p => p.toJSON());
     await writeFile(filePath, JSON.stringify(plainToSave, null, 2), 'utf-8');

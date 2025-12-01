@@ -6,8 +6,8 @@ export interface FlightData {
     flightNumber: string;
     origin: string;
     destination: string;
-    departureTime: Date;
-    arrivalTime: Date;
+    departureTime: string;
+    arrivalTime: string;
     capacity: number;
     bookedSeats: number;
     status: FlightStatus
@@ -29,8 +29,8 @@ export default class Flight {
         this._flightNumber = data.flightNumber;
         this._origin = data.origin;
         this._destination = data.destination;
-        this._departureTime = data.departureTime;
-        this._arrivalTime = data.arrivalTime;
+        this._departureTime = new Date(data.departureTime);
+        this._arrivalTime = new Date(data.arrivalTime);
         this._capacity = data.capacity;
         this._bookedSeats = data.bookedSeats;
         this._status = data.status;
@@ -118,10 +118,24 @@ export default class Flight {
         this._status = newStatus;
     }
 
-    static fromPlain(obj: FlightData): Flight {
-        const flightData = { ...obj, departureTime: new Date(obj.departureTime), arrivalTime: new Date(obj.arrivalTime) }
-        return new Flight(flightData);
+    toJSON(): FlightData {
+        return {
+            id: this._id,
+            flightNumber: this._flightNumber,
+            origin: this._origin,
+            destination: this._destination,
+            departureTime: this._departureTime.toISOString(),
+            arrivalTime: this._arrivalTime.toISOString(),
+            capacity: this._capacity,
+            bookedSeats: this._bookedSeats,
+            status: this._status
+        }
     }
+
+    static fromPlain(obj: FlightData): Flight {
+        return new Flight(obj);
+    }
+
 }
 
 
@@ -134,8 +148,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         flightNumber: "EK202",
         origin: "DXB",
         destination: "LHR",
-        departureTime: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours from now
-        arrivalTime: new Date(Date.now() + 8 * 60 * 60 * 1000),
+        departureTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
+        arrivalTime: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(),
         capacity: 180,
         bookedSeats: 0,
         status: "scheduled",
