@@ -59,6 +59,10 @@ export default class Flight {
         return Math.max(this._capacity - this._bookedSeats, 0);
     }
 
+    get bookedSeats(): number {
+        return this._bookedSeats;
+    }
+
     // Methods
 
     bookSeat(): boolean {
