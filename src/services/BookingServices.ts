@@ -13,6 +13,7 @@ interface BookingData {
     bookedAt: string;
 }
 
+
 export async function getAllBookings(): Promise<BookingData[]> {
     try {
         const data = await readFile(filePath, 'utf-8');
@@ -140,6 +141,21 @@ export async function getBookingSummaryByFlight(flightId: number): Promise<{ fli
 
     return {
         flightId: id,
+        totalBookings: bookingList.length
+    }
+}
+
+export async function getBookingSummaryByPassenger(passengerId: number): Promise<{ passengerId: number; totalBookings: number } | null> {
+    const id = Number(passengerId);
+    if (!Number.isFinite(id)) return null;
+
+    const bookings = await getAllBookings();
+    const bookingList = bookings.filter(b => b.passengerId === id);
+
+    if (bookingList.length === 0) return null;
+
+    return {
+        passengerId: id,
         totalBookings: bookingList.length
     }
 }
