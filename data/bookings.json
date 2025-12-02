@@ -10,11 +10,5 @@
     "flightId": 1,
     "passengerId": 3,
     "bookedAt": "2025-12-02T13:50:25.226Z"
-  },
-  {
-    "id": 3,
-    "flightId": 1,
-    "passengerId": 4,
-    "bookedAt": "2025-12-02T13:50:25.226Z"
   }
 ]

@@ -2,6 +2,7 @@ import { readFile, writeFile } from "fs/promises";
 import { getPassengerById } from "./PassengerServices.js";
 import { getAllFlights, getFlightById, updateFlight } from "./FlightServices.js";
 import Flight, { FlightData } from "../models/Flight.js"
+import { setMaxListeners } from "events";
 
 const filePath = new URL('../../data/bookings.json', import.meta.url);
 
@@ -23,6 +24,7 @@ export async function getAllBookings(): Promise<BookingData[]> {
     }
 }
 
+
 export async function saveBooking(partialBookingData: Omit<BookingData, "id">): Promise<BookingData | null> {
     const bookings = await getAllBookings();
     const maxId = bookings.length > 0 ? Math.max(...bookings.map(b => b.id)) : 0;
@@ -39,7 +41,6 @@ export async function saveBooking(partialBookingData: Omit<BookingData, "id">): 
 
     return booking;
 }
-
 
 
 export async function bookSeat(flightId: number, passengerId: number) {
@@ -74,7 +75,7 @@ export async function bookSeat(flightId: number, passengerId: number) {
 }
 
 
-async function getBookingById(bookingId: number): Promise<BookingData | null> {
+export async function getBookingById(bookingId: number): Promise<BookingData | null> {
     const id = Number(bookingId);
     if (!Number.isFinite(id)) return null;
 
@@ -85,7 +86,7 @@ async function getBookingById(bookingId: number): Promise<BookingData | null> {
 }
 
 
-async function getBookingByFlightId(flightId: number): Promise<BookingData[] | null> {
+export async function getBookingByFlightId(flightId: number): Promise<BookingData[] | null> {
     const id = Number(flightId);
     if (!Number.isFinite(id)) return null;
 
@@ -96,7 +97,7 @@ async function getBookingByFlightId(flightId: number): Promise<BookingData[] | n
 }
 
 
-async function getBookingByPassengerId(passengerId: number): Promise<BookingData[] | null> {
+export async function getBookingByPassengerId(passengerId: number): Promise<BookingData[] | null> {
     const id = Number(passengerId);
     if (!Number.isFinite(id)) return null;
 
@@ -106,13 +107,12 @@ async function getBookingByPassengerId(passengerId: number): Promise<BookingData
     return booking.length > 0 ? booking : null;
 }
 
-export async function cancelBooking(bookingId: number) {
+
+export async function cancelBooking(bookingId: number): Promise<boolean | null> {
     const id = Number(bookingId);
-    if (!Number.isFinite(id)) return false;
+    if (!Number.isFinite(id)) return null;
 
     const bookings = await getAllBookings();
-    if (bookings.length === 0) return false;
-
     const index = bookings.findIndex(b => b.id === id);
     if (index === -1) return false;
 
@@ -128,6 +128,22 @@ export async function cancelBooking(bookingId: number) {
 
     return true;
 }
+
+
+export async function getBookingSummaryByFlight(flightId: number): Promise<{ flightId: number; totalBookings: number } | null> {
+    const id = Number(flightId);
+    if (!Number.isFinite(id)) return null;
+
+    const bookings = await getAllBookings();
+    const bookingList = bookings.filter(b => b.flightId === id);
+    if (bookingList.length === 0) return null;
+
+    return {
+        flightId: id,
+        totalBookings: bookingList.length
+    }
+}
+
 
 
 if (import.meta.url === `file://${process.argv[1]}`) {
@@ -150,5 +166,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
     const booking6 = await getBookingByPassengerId(3);
     console.log("Booking 6:", booking6);
+
+    const bookingToCancel = await cancelBooking(3);
+    console.log('Booking Cancelled', bookingToCancel)
 
 }
