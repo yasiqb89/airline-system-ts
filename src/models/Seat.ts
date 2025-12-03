@@ -1,4 +1,3 @@
-import { info } from "console"
 
 type SeatType = 'aile' | 'middle' | 'window'
 
@@ -8,14 +7,16 @@ export interface SeatData {
     seatType: SeatType
     isReserved: boolean
     reservedBy: number | null
+    flightId: number | null
 }
 
-export class Seat {
+export default class Seat {
     private _id: number
     private _seatNumber: string
     private _seatType: SeatType
     private _isReserved: boolean
     private _reservedBy: number | null
+    private _flightId: number | null
 
     constructor(data: SeatData) {
         this._id = data.id;
@@ -23,35 +24,41 @@ export class Seat {
         this._seatType = data.seatType;
         this._isReserved = data.isReserved;
         this._reservedBy = data.reservedBy;
+        this._flightId = data.flightId;
     }
 
-    get seatId(): number {
-        return this.seatId;
+    get id(): number {
+        return this._id;
     }
 
     get seatNumber(): string {
-        return this.seatNumber;
+        return this._seatNumber;
     }
 
     get seatType(): SeatType {
-        return this.seatType;
+        return this._seatType;
+    }
+
+    get flightId(): number | null {
+        return this.flightId;
     }
 
     get isReserved(): boolean {
-        return this.isReserved;
+        return this._isReserved;
     }
 
     get reservedBy(): number | null {
-        return this.reservedBy;
+        return this._reservedBy;
     }
 
     get info(): string {
         return `${this.seatNumber} | ${this.seatType} | ${this.isReserved} | ${this.reservedBy}`
     }
 
-    reserve(): boolean {
+    reserve(passengerId: number): boolean {
         if (this.isReserved) return false;
         this._isReserved = true;
+        this._reservedBy = passengerId;
         return true;
     }
 
@@ -97,8 +104,13 @@ export class Seat {
             seatType: this._seatType,
             isReserved: this._isReserved,
             reservedBy: this._reservedBy,
+            flightId: this._flightId
         }
 
+    }
+
+    static fromPlain(obj: SeatData): Seat {
+        return new Seat(obj);
     }
 
 }

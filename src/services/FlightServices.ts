@@ -2,7 +2,7 @@ import { readFile, writeFile } from "fs/promises";
 import Flight, { FlightData } from "../models/Flight.js"
 
 
-const filePath = new URL('../../data/flight.json', import.meta.url);
+const filePath = new URL('../../data/flights.json', import.meta.url);
 
 export async function getAllFlights(): Promise<Flight[]> {
     try {

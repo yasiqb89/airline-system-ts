@@ -2,7 +2,7 @@ import { readFile, writeFile } from "fs/promises";
 import Passenger, { PassengerData } from "../models/Passenger.js";
 
 // File path JSON
-const filePath = new URL('../../data/passenger.json', import.meta.url);
+const filePath = new URL('../../data/passengers.json', import.meta.url);
 
 
 export async function getAllPassengers(): Promise<Passenger[]> {

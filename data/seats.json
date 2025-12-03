@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "seatNumber": "1A",
+        "seatType": "business",
+        "isReserved": false,
+        "reservedBy": null,
+        "flightId": 1
+    },
+    {
+        "id": 2,
+        "seatNumber": "1B",
+        "seatType": "business",
+        "isReserved": true,
+        "reservedBy": 3,
+        "flightId": 1
+    },
+    {
+        "id": 3,
+        "seatNumber": "12C",
+        "seatType": "economy",
+        "isReserved": false,
+        "reservedBy": null,
+        "flightId": 1
+    }
+]
