@@ -40,7 +40,7 @@ export default class Seat {
     }
 
     get flightId(): number | null {
-        return this.flightId;
+        return this._flightId;
     }
 
     get isReserved(): boolean {
@@ -106,7 +106,6 @@ export default class Seat {
             reservedBy: this._reservedBy,
             flightId: this._flightId
         }
-
     }
 
     static fromPlain(obj: SeatData): Seat {
