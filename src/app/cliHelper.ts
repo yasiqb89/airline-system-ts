@@ -1,6 +1,8 @@
 import { askQuestion } from "./io.js";
 import { addPassenger, getAllPassengers, getPassengerById, updatePassenger, removePassenger } from "../services/PassengerServices.js";
 import { PassengerData } from "../models/Passenger.js";
+import { getFlightById, addFlight, updateFlight, removeFlight, getAllFlights } from "../services/FlightServices.js";
+import { FlightData } from "../models/Flight.js";
 
 
 export async function AddNewPassengerCli(): Promise<void> {
@@ -121,4 +123,121 @@ export async function removePassengerCli(): Promise<void> {
     } else {
         console.log(`Error: Passenger ID ${removeId} not found.`);
     }
+}
+
+export async function getAllFlightsCli(): Promise<void> {
+    const flights = await getAllFlights();
+    if (flights.length === 0) {
+        console.log("No flights found.");
+    } else {
+        console.log("\n-- Flight List --");
+        flights.forEach(f => console.log(f.info));
+    }
+}
+
+export async function getFlightByIdCli(): Promise<void> {
+    console.log("\n-- Get Flight by ID --");
+    const rawId = (await askQuestion("Enter Flight ID: ")).trim();
+    const id = Number(rawId);
+
+    if (!Number.isInteger(id)) {
+        console.log("Invalid ID.");
+        return;
+    }
+
+    const flight = await getFlightById(id);
+    if (!flight) {
+        console.log(`No flight found with ID ${id}.`);
+        return;
+    }
+
+    console.log("\n-- Flight --");
+    console.log(flight.info);
+
+}
+
+export async function addFlightCli(): Promise<void> {
+    console.log("\n-- Add Flight --");
+    console.log("Date format: YYYY-MM-DDTHH:MM:SS (e.g., 2025-03-15T09:30:00)");
+
+    const flightNumber = (await askQuestion("Flight Number: ")).trim();
+    const origin = (await askQuestion("Origin: ")).trim();
+    const destination = (await askQuestion("Destination: ")).trim();
+    const departureTime = (await askQuestion("Departure Time: ")).trim();
+    const arrivalTime = (await askQuestion("Arrival Time: ")).trim();
+    const capacityInput = (await askQuestion("Capacity: ")).trim();
+    const bookedSeatsInput = (await askQuestion("Booked Seats: ")).trim();
+
+    // Validate basic inputs
+    if (!flightNumber || !origin || !destination || !departureTime || !arrivalTime) {
+        console.log("❌ Error: All fields are required.");
+        return;
+    }
+
+    // Validate capacity and booked seats
+    const capacity = Number(capacityInput);
+    const bookedSeats = Number(bookedSeatsInput);
+
+    if (!Number.isInteger(capacity) || capacity <= 0) {
+        console.log("❌ Error: Capacity must be a positive integer.");
+        return;
+    }
+
+    if (!Number.isInteger(bookedSeats) || bookedSeats < 0) {
+        console.log("❌ Error: Booked seats must be a non-negative integer.");
+        return;
+    }
+
+    if (bookedSeats > capacity) {
+        console.log("❌ Error: Booked seats cannot exceed capacity.");
+        return;
+    }
+
+    // Validate departure time
+    const depDate = new Date(departureTime);
+    if (isNaN(depDate.getTime())) {
+        console.log("❌ Error: Invalid departure time format. Use YYYY-MM-DDTHH:MM:SS (e.g., 2025-03-15T09:30:00)");
+        return;
+    }
+
+    // Validate arrival time
+    const arrDate = new Date(arrivalTime);
+    if (isNaN(arrDate.getTime())) {
+        console.log("❌ Error: Invalid arrival time format. Use YYYY-MM-DDTHH:MM:SS (e.g., 2025-03-15T14:30:00)");
+        return;
+    }
+
+    // Check if arrival is after departure
+    if (arrDate <= depDate) {
+        console.log("❌ Error: Arrival time must be after departure time.");
+        return;
+    }
+
+    const flightStatus = "scheduled";
+
+    const flightInfo: Omit<FlightData, 'id'> = {
+        flightNumber: flightNumber,
+        origin: origin,
+        destination: destination,
+        departureTime: departureTime,
+        arrivalTime: arrivalTime,
+        capacity: capacity,
+        bookedSeats: bookedSeats,
+        status: flightStatus
+    };
+
+    const newFlight = await addFlight(flightInfo);
+    if (!newFlight) {
+        console.log("❌ Failed to add flight.");
+        return;
+    }
+
+    console.log("\n✅ Flight added successfully!");
+    console.log(newFlight.info);
+}
+
+export async function updateFlightCli(): Promise<void> {
+}
+
+export async function removeFlightCli(): Promise<void> {
 }

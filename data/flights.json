@@ -75,5 +75,16 @@
     "capacity": 350,
     "bookedSeats": 340,
     "status": "scheduled"
+  },
+  {
+    "id": 8,
+    "flightNumber": "SK123",
+    "origin": "Oslo",
+    "destination": "Brussels",
+    "departureTime": "2025-03-15T08:30:00.000Z",
+    "arrivalTime": "2025-03-18T08:30:00.000Z",
+    "capacity": 250,
+    "bookedSeats": 20,
+    "status": "scheduled"
   }
 ]

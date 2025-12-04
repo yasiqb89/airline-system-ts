@@ -28,7 +28,7 @@ export async function getFlightById(flightId: number): Promise<Flight | null> {
 }
 
 
-export async function addFlight(data: FlightData): Promise<Flight> {
+export async function addFlight(data: Omit<FlightData, 'id'>): Promise<Flight> {
     const flights = await getAllFlights();
     const maxId = flights.length > 0 ? Math.max(...flights.map(f => f.id)) : 0;
     const nextId = maxId + 1;
