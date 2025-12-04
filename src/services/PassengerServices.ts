@@ -86,7 +86,7 @@ export async function updatePassenger(passengerId: number, updates: Partial<Pass
 }
 
 
-async function removePassenger(passengerId: number): Promise<boolean | null> {
+export async function removePassenger(passengerId: number): Promise<boolean | null> {
     const id = Number(passengerId);
     if (!Number.isFinite(id)) return null;
 
