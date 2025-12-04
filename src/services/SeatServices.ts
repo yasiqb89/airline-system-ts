@@ -1,5 +1,5 @@
 import { readFile, writeFile } from "fs/promises";
-import Seat, { SeatData } from "../models/Seat";
+import Seat, { SeatData } from "../models/Seat.js";
 import { getPassengerById } from "./PassengerServices.js";
 import { getFlightById } from "./FlightServices.js";
 

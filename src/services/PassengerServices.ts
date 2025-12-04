@@ -57,7 +57,7 @@ export async function addPassenger(data: PassengerData): Promise<Passenger> {
 }
 
 
-async function updatePassenger(passengerId: number, updates: Partial<PassengerData>): Promise<Passenger | null> {
+export async function updatePassenger(passengerId: number, updates: Partial<PassengerData>): Promise<Passenger | null> {
     const id = Number(passengerId);
     if (Number.isFinite(id)) return null;
 
