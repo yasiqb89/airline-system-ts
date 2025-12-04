@@ -49,7 +49,7 @@ export async function addPassenger(data: PassengerData): Promise<Passenger> {
 
     allPassengers.push(newPassenger);
 
-    const plainToSave = allPassengers.map(p => p.toJSON);
+    const plainToSave = allPassengers.map(p => p.toJSON());
 
     await writeFile(filePath, JSON.stringify(plainToSave, null, 2), 'utf-8');
 
@@ -59,7 +59,7 @@ export async function addPassenger(data: PassengerData): Promise<Passenger> {
 
 export async function updatePassenger(passengerId: number, updates: Partial<PassengerData>): Promise<Passenger | null> {
     const id = Number(passengerId);
-    if (Number.isFinite(id)) return null;
+    if (!Number.isFinite(id)) return null;
 
     const passengers = await getAllPassengers();
 
