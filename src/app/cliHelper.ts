@@ -3,6 +3,7 @@ import { addPassenger, getAllPassengers, getPassengerById, updatePassenger, remo
 import { PassengerData } from "../models/Passenger.js";
 import { getFlightById, addFlight, updateFlight, removeFlight, getAllFlights } from "../services/FlightServices.js";
 import { FlightData } from "../models/Flight.js";
+import { FlightStatus } from "../models/Flight.js";
 
 
 export async function AddNewPassengerCli(): Promise<void> {
@@ -170,7 +171,7 @@ export async function addFlightCli(): Promise<void> {
 
     // Validate basic inputs
     if (!flightNumber || !origin || !destination || !departureTime || !arrivalTime) {
-        console.log("❌ Error: All fields are required.");
+        console.log("Error: All fields are required.");
         return;
     }
 
@@ -179,37 +180,37 @@ export async function addFlightCli(): Promise<void> {
     const bookedSeats = Number(bookedSeatsInput);
 
     if (!Number.isInteger(capacity) || capacity <= 0) {
-        console.log("❌ Error: Capacity must be a positive integer.");
+        console.log("Error: Capacity must be a positive integer.");
         return;
     }
 
     if (!Number.isInteger(bookedSeats) || bookedSeats < 0) {
-        console.log("❌ Error: Booked seats must be a non-negative integer.");
+        console.log("Error: Booked seats must be a non-negative integer.");
         return;
     }
 
     if (bookedSeats > capacity) {
-        console.log("❌ Error: Booked seats cannot exceed capacity.");
+        console.log("Error: Booked seats cannot exceed capacity.");
         return;
     }
 
     // Validate departure time
     const depDate = new Date(departureTime);
     if (isNaN(depDate.getTime())) {
-        console.log("❌ Error: Invalid departure time format. Use YYYY-MM-DDTHH:MM:SS (e.g., 2025-03-15T09:30:00)");
+        console.log("Error: Invalid departure time format. Use YYYY-MM-DDTHH:MM:SS (e.g., 2025-03-15T09:30:00)");
         return;
     }
 
     // Validate arrival time
     const arrDate = new Date(arrivalTime);
     if (isNaN(arrDate.getTime())) {
-        console.log("❌ Error: Invalid arrival time format. Use YYYY-MM-DDTHH:MM:SS (e.g., 2025-03-15T14:30:00)");
+        console.log("Error: Invalid arrival time format. Use YYYY-MM-DDTHH:MM:SS (e.g., 2025-03-15T14:30:00)");
         return;
     }
 
     // Check if arrival is after departure
     if (arrDate <= depDate) {
-        console.log("❌ Error: Arrival time must be after departure time.");
+        console.log("Error: Arrival time must be after departure time.");
         return;
     }
 
@@ -228,15 +229,100 @@ export async function addFlightCli(): Promise<void> {
 
     const newFlight = await addFlight(flightInfo);
     if (!newFlight) {
-        console.log("❌ Failed to add flight.");
+        console.log("Failed to add flight.");
         return;
     }
 
-    console.log("\n✅ Flight added successfully!");
+    console.log("\nFlight added successfully!");
     console.log(newFlight.info);
 }
 
 export async function updateFlightCli(): Promise<void> {
+    console.log("\n-- Update Flight--");
+
+    const flights = await getAllFlights();
+    if (!flights) {
+        console.log("No flights available ! ");
+        return;
+    }
+
+    flights.forEach(f => {
+        console.log(f.info);
+    });
+
+    const rawId = (await askQuestion("Flight ID: ")).trim();
+    const flightId = Number(rawId);
+    if (!Number.isInteger(flightId) || !flightId) {
+        console.log("Invalid or No ID.")
+        return;
+    }
+
+    const existing = await getFlightById(flightId);
+    if (!existing) {
+        console.log(`No flightsfound with ID ${flightId}.`)
+        return;
+    }
+
+    console.log("Leave field blank to keep current value.");
+
+    const newFlightNumber = (await askQuestion(`Flight Number (${existing?.flightNumber}): `)).trim();
+    const newOrigin = (await askQuestion(`Origin (${existing?.origin}): `)).trim();
+    const newDestination = (await askQuestion(`Destination (${existing?.destination}): `)).trim();
+    const newdepartureTime = (await askQuestion(`Departure Time (${existing?.departureTime}): `)).trim();
+    const newArrivalTime = (await askQuestion(`Arrival Time (${existing?.arrivalTime}): `)).trim();
+    const newStatus = (await askQuestion(`Status [scheduled/boarding/departed/cancelled] (${existing?.status}): `)).trim();
+
+    const updates: Partial<FlightData> = {}
+
+    if (newFlightNumber) updates.flightNumber = newFlightNumber;
+    if (newOrigin) updates.origin = newOrigin;
+    if (newDestination) updates.destination = newDestination;
+
+
+    if (newdepartureTime) {
+        const depDate = new Date(newdepartureTime);
+        if (isNaN(depDate.getTime())) {
+            console.log("Warning: Invalid departure time format. Skipping this field.");
+        } else {
+            updates.departureTime = newdepartureTime;
+        }
+    }
+
+    if (newArrivalTime) {
+        const arrDate = new Date(newArrivalTime);
+        if (isNaN(arrDate.getTime())) {
+            console.log("Warning: Invalid arrival time format. Skipping this field.");
+        } else {
+            updates.arrivalTime = newArrivalTime;
+        }
+    }
+
+    if (newStatus) {
+        const validStatuses: string[] = ["scheduled", "boarding", "departed", "cancelled"];
+        if (validStatuses.includes(newStatus)) {
+            updates.status = newStatus as "scheduled" | "boarding" | "departed" | "cancelled";
+        } else {
+            console.log(`Warning: Invalid status "${newStatus}". Must be one of: scheduled, boarding, departed, cancelled. Skipping this field.`);
+        }
+    }
+
+    if (Object.keys(updates).length === 0) {
+        console.log("No updates provided.");
+        return;
+    }
+
+    const updated = await updateFlight(flightId, updates);
+    if (updated) {
+        console.log("Flight updated successfully:");
+        console.log(updated.info);
+    } else {
+        console.log("Failed to update flight.");
+        return;
+    }
+
+    console.log("\nFlight updated successfully!");
+    console.log(updated.info);
+
 }
 
 export async function removeFlightCli(): Promise<void> {

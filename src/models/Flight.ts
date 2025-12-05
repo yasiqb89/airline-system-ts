@@ -1,5 +1,5 @@
 
-type FlightStatus = "scheduled" | "boarding" | "departed" | "cancelled";
+export type FlightStatus = "scheduled" | "boarding" | "departed" | "cancelled";
 
 export interface FlightData {
     id: number;
@@ -59,9 +59,30 @@ export default class Flight {
         return Math.max(this._capacity - this._bookedSeats, 0);
     }
 
+    get flightNumber(): string {
+        return this._flightNumber;
+    }
+
     get bookedSeats(): number {
         return this._bookedSeats;
     }
+
+    get origin(): string {
+        return this._origin;
+    }
+
+    get destination(): string {
+        return this._destination;
+    }
+
+    get departureTime(): Date {
+        return this._departureTime;
+    }
+
+    get arrivalTime(): Date {
+        return this._arrivalTime;
+    }
+
 
     // Methods
 
