@@ -4,6 +4,7 @@ import { PassengerData } from "../models/Passenger.js";
 import { getFlightById, addFlight, updateFlight, removeFlight, getAllFlights } from "../services/FlightServices.js";
 import { FlightData } from "../models/Flight.js";
 import { FlightStatus } from "../models/Flight.js";
+import { bookSeat, cancelBooking, getAllBookings, getBookingById } from "../services/BookingServices.js";
 
 
 export async function AddNewPassengerCli(): Promise<void> {
@@ -28,6 +29,7 @@ export async function AddNewPassengerCli(): Promise<void> {
 
 }
 
+
 export async function getAllPassengersCli(): Promise<void> {
     const passengers = await getAllPassengers();
     if (passengers.length === 0) {
@@ -37,6 +39,7 @@ export async function getAllPassengersCli(): Promise<void> {
         passengers.forEach(p => console.log(p.info));
     }
 }
+
 
 export async function getPassengerByIdCli(): Promise<void> {
     const rawId = (await askQuestion("Enter Passenger ID: ")).trim();
@@ -55,6 +58,7 @@ export async function getPassengerByIdCli(): Promise<void> {
         console.log(passenger.info);
     }
 }
+
 
 export async function updatePassengerCli(): Promise<void> {
     console.log("\n-- Update Passenger --");
@@ -101,6 +105,7 @@ export async function updatePassengerCli(): Promise<void> {
     }
 }
 
+
 export async function removePassengerCli(): Promise<void> {
     console.log("\n-- Remove Passenger --");
     const rawRemoveId = (await askQuestion("Enter Passenger ID to remove: ")).trim();
@@ -126,6 +131,7 @@ export async function removePassengerCli(): Promise<void> {
     }
 }
 
+
 export async function getAllFlightsCli(): Promise<void> {
     const flights = await getAllFlights();
     if (flights.length === 0) {
@@ -135,6 +141,7 @@ export async function getAllFlightsCli(): Promise<void> {
         flights.forEach(f => console.log(f.info));
     }
 }
+
 
 export async function getFlightByIdCli(): Promise<void> {
     console.log("\n-- Get Flight by ID --");
@@ -156,6 +163,7 @@ export async function getFlightByIdCli(): Promise<void> {
     console.log(flight.info);
 
 }
+
 
 export async function addFlightCli(): Promise<void> {
     console.log("\n-- Add Flight --");
@@ -357,4 +365,148 @@ export async function removeFlightCli(): Promise<void> {
         console.log("Failed to remove flight.");
         return;
     }
+}
+
+
+export async function bookSeatCli(): Promise<void> {
+    console.log("\n-- Book Seat--");
+    const flights = await getAllFlights();
+    if (!flights) {
+        console.log("No flights available ! ");
+        return;
+    }
+
+    flights.forEach(f => {
+        console.log(f.info);
+    });
+
+    const rawId = (await askQuestion("\nFlight ID: ")).trim();
+    const flightId = Number(rawId);
+    if (!Number.isInteger(flightId) || !flightId) {
+        console.log("Invalid or No ID.")
+        return;
+    }
+
+    const existing = await getFlightById(flightId);
+    if (!existing) {
+        console.log(`No Flights found with ID ${flightId}.`)
+        return;
+    }
+
+    if (existing.isFull) {
+        console.log(`Flight ${flightId} is full.`)
+        return;
+    }
+
+    console.log(`\n-- Book Seat for Flight ID ${flightId}--`);
+    console.log(existing.info);
+
+    const passengers = await getAllPassengers();
+    if (!passengers) {
+        console.log("No passengers available ! ");
+        return;
+    }
+
+    passengers.forEach(p => {
+        console.log(p.info);
+    });
+
+    const rawPassengerId = (await askQuestion("Passenger ID: ")).trim();
+    const passengerId = Number(rawPassengerId);
+    if (!Number.isInteger(passengerId) || !passengerId) {
+        console.log("Invalid or No ID.")
+        return;
+    }
+
+    const passenger = await getPassengerById(passengerId);
+    if (!passenger) {
+        console.log(`No passengers found with ID ${passengerId}.`)
+        return;
+    }
+
+    const booked = await bookSeat(flightId, passengerId);
+    if (booked) {
+        console.log("Seat booked successfully for passenger:", passenger.name, "on flight:", existing.flightNumber);
+    } else {
+        console.log("Failed to book seat.");
+        return;
+    }
+
+}
+
+export async function cancelBookingCli(): Promise<void> {
+    console.log("\n-- Cancel Booking--");
+    const bookings = await getAllBookings();
+    if (!bookings) {
+        console.log("No bookings available ! ");
+        return;
+    }
+
+    bookings.forEach(b => {
+        console.log(`Booking ID: ${b.id}, Flight ID: ${b.flightId}, Passenger ID: ${b.passengerId}, Booked At: ${b.bookedAt}`);
+    });
+
+    const rawId = (await askQuestion("\nBooking ID: ")).trim();
+    const bookingId = Number(rawId);
+    if (!Number.isInteger(bookingId) || !bookingId) {
+        console.log("Invalid or No ID.")
+        return;
+    }
+
+    const existing = await getBookingById(bookingId);
+    if (!existing) {
+        console.log(`No bookings found with ID ${bookingId}.`)
+        return;
+    }
+
+    const cancelled = await cancelBooking(bookingId);
+    if (cancelled) {
+        console.log("Booking cancelled successfully.");
+    } else {
+        console.log("Failed to cancel booking.");
+        return;
+    }
+
+}
+
+export async function listBookingsCli(): Promise<void> {
+    console.log("\n-- List Bookings--");
+    const bookings = await getAllBookings();
+    if (!bookings) {
+        console.log("No bookings available ! ");
+        return;
+    }
+
+    bookings.forEach(b => {
+        console.log(`Booking ID: ${b.id}, Flight ID: ${b.flightId}, Passenger ID: ${b.passengerId}, Booked At: ${b.bookedAt}`);
+    });
+
+}
+
+export async function bookingSummaryByPassengerCli(): Promise<void> {
+    console.log("\n-- Booking Summary by Passenger--");
+    const passengers = await getAllPassengers();
+    if (!passengers) {
+        console.log("No passengers available ! ");
+        return;
+    }
+
+    passengers.forEach(p => {
+        console.log(p.info);
+    });
+
+}
+
+export async function bookingSummaryByFlightCli(): Promise<void> {
+    console.log("\n-- Booking Summary by Flight--");
+    const flights = await getAllFlights();
+    if (!flights) {
+        console.log("No flights available ! ");
+        return;
+    }
+
+    flights.forEach(f => {
+        console.log(f.info);
+    });
+
 }

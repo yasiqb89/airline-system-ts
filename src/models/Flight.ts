@@ -42,7 +42,7 @@ export default class Flight {
     }
 
     get info(): string {
-        return `${this._flightNumber} | ${this._origin} → ${this._destination} | ` +
+        return `${this._id} - ${this._flightNumber} | ${this._origin} → ${this._destination} | ` +
             `Departs: ${this._departureTime.toISOString()} | ` +
             `Seats: ${this._bookedSeats}/${this._capacity} | Status: ${this._status}`;
     }

@@ -2,7 +2,6 @@ import { readFile, writeFile } from "fs/promises";
 import { getPassengerById } from "./PassengerServices.js";
 import { getAllFlights, getFlightById, updateFlight } from "./FlightServices.js";
 import Flight, { FlightData } from "../models/Flight.js"
-import { setMaxListeners } from "events";
 
 const filePath = new URL('../../data/bookings.json', import.meta.url);
 
