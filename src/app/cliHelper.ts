@@ -237,6 +237,7 @@ export async function addFlightCli(): Promise<void> {
     console.log(newFlight.info);
 }
 
+
 export async function updateFlightCli(): Promise<void> {
     console.log("\n-- Update Flight--");
 
@@ -312,6 +313,7 @@ export async function updateFlightCli(): Promise<void> {
     }
 
     const updated = await updateFlight(flightId, updates);
+
     if (updated) {
         console.log("Flight updated successfully:");
         console.log(updated.info);
@@ -320,10 +322,8 @@ export async function updateFlightCli(): Promise<void> {
         return;
     }
 
-    console.log("\nFlight updated successfully!");
-    console.log(updated.info);
-
 }
+
 
 export async function removeFlightCli(): Promise<void> {
     console.log("\n-- Remove Flight--");
@@ -346,7 +346,7 @@ export async function removeFlightCli(): Promise<void> {
 
     const existing = await getFlightById(flightId);
     if (!existing) {
-        console.log(`No flightsfound with ID ${flightId}.`)
+        console.log(`No Flights found with ID ${flightId}.`)
         return;
     }
 
@@ -357,6 +357,4 @@ export async function removeFlightCli(): Promise<void> {
         console.log("Failed to remove flight.");
         return;
     }
-
-    console.log("\nFlight removed successfully!");
 }
