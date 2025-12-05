@@ -508,5 +508,4 @@ export async function bookingSummaryByFlightCli(): Promise<void> {
     flights.forEach(f => {
         console.log(f.info);
     });
-
 }

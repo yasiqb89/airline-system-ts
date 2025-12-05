@@ -73,7 +73,7 @@
     "departureTime": "2025-03-21T08:55:00.000Z",
     "arrivalTime": "2025-03-21T20:15:00.000Z",
     "capacity": 350,
-    "bookedSeats": 341,
+    "bookedSeats": 340,
     "status": "scheduled"
   },
   {
