@@ -24,7 +24,6 @@ export async function getFlightById(flightId: number): Promise<Flight | null> {
     if (!flight) return null;
 
     return flight;
-
 }
 
 

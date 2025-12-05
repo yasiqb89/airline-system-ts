@@ -326,4 +326,37 @@ export async function updateFlightCli(): Promise<void> {
 }
 
 export async function removeFlightCli(): Promise<void> {
+    console.log("\n-- Remove Flight--");
+    const flights = await getAllFlights();
+    if (!flights) {
+        console.log("No flights available ! ");
+        return;
+    }
+
+    flights.forEach(f => {
+        console.log(f.info);
+    });
+
+    const rawId = (await askQuestion("Flight ID: ")).trim();
+    const flightId = Number(rawId);
+    if (!Number.isInteger(flightId) || !flightId) {
+        console.log("Invalid or No ID.")
+        return;
+    }
+
+    const existing = await getFlightById(flightId);
+    if (!existing) {
+        console.log(`No flightsfound with ID ${flightId}.`)
+        return;
+    }
+
+    const removed = await removeFlight(flightId);
+    if (removed) {
+        console.log("Flight removed successfully.");
+    } else {
+        console.log("Failed to remove flight.");
+        return;
+    }
+
+    console.log("\nFlight removed successfully!");
 }
